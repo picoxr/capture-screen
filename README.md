@@ -1,11 +1,14 @@
-# Screen Capture Instructions
+<p align="right"><a href="https://github.com/PicoSupport/PicoSupport" target="_blank">Pico Support Home</a></p>
 
-1.This demo is mainly used for DKS and Goblind screenshot function test.
+## Unity_Demo_ScreenShot
 
-2.DKS screen capture when pressing A key, screenshot after direct in the computer and picture viewer to see.
+## Unity Versions：
+- 2017.1.0f3 and later
 
-3.Goblin screen capture press the ok key on the right side of the device and you can see it both on the computer and in the image viewer.
+## Description：
 
-## Note
+- 按下头盔确认键进行屏幕截图
 
-1.DKS and goblin in the path of the screenshots on the computer in the Android/data/com. Pico. Integration/files below, (com. Pico. Integration is the package name).
+## Usage：
+
+- Pico devices in the path of the screenshots on the computer in the **Android/data/com.pico.Integration/files** below, (**com.pico.Integration** is the package name).

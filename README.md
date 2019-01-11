@@ -7,8 +7,8 @@
 
 ## Description：
 
-- 按下头盔确认键进行屏幕截图
+- press the Ok button to take a screenshot
 
 ## Usage：
 
-- Pico devices in the path of the screenshots on the computer in the **Android/data/com.pico.Integration/files** below, (**com.pico.Integration** is the package name).
+- Pico devices in the path of the screenshots on the computer in the **/storage/emulated/0/Pictures/Screenshots/** below, (**com.pico.Integration** is the package name).

@@ -1,0 +1,178 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>10.0.20506</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <RootNamespace></RootNamespace>
+    <ProjectGuid>{3581F9A2-71C3-A1A4-2012-4685384FF6DF}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <BaseDirectory>Assets</BaseDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>Temp\bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;UNITY_5_3_OR_NEWER;UNITY_5_4_OR_NEWER;UNITY_5_5_OR_NEWER;UNITY_5_6_OR_NEWER;UNITY_5_6_1;UNITY_5_6;UNITY_5;UNITY_ANALYTICS;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_GENERICS;ENABLE_PVR_GI;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_RUNTIME_NAVMESH_BUILDING;ENABLE_SPRITERENDERER_FLIPPING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_RAKNET;ENABLE_UNET;ENABLE_LZMA;ENABLE_UNITYEVENTS;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES_COLLAB;ENABLE_CLOUD_SERVICES_ADS;ENABLE_CLOUD_HUB;ENABLE_CLOUD_PROJECT_ID;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_SERVICES_BUILD;ENABLE_CLOUD_LICENSE;ENABLE_EDITOR_METRICS;ENABLE_EDITOR_METRICS_CACHING;ENABLE_NATIVE_ARRAY;INCLUDE_DYNAMIC_GI;INCLUDE_GI;PLATFORM_SUPPORTS_MONO;INCLUDE_PUBNUB;ENABLE_PLAYMODE_TESTS_RUNNER;ENABLE_SCRIPTING_NEW_CSHARP_COMPILER;ENABLE_VIDEO;UNITY_ANDROID;ENABLE_SUBSTANCE;UNITY_ANDROID_API;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_UNITYWEBREQUEST;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_PURCHASING;ENABLE_CLOUD_SERVICES_CRASH_REPORTING;PLATFORM_SUPPORTS_ADS_ID;UNITY_CAN_SHOW_SPLASH_SCREEN;ENABLE_VR;ENABLE_UNITYADS_RUNTIME;UNITY_UNITYADS_API;ENABLE_MONO;NET_2_0_SUBSET;ENABLE_PROFILER;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN;ENABLE_NATIVE_ARRAY_CHECKS;UNITY_TEAM_LICENSE;UNITY_HAS_GOOGLEVR</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>Temp\bin\Release\</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoWarn>0169</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.XML" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="UnityEngine">
+      <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/Managed/UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor">
+      <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+     <Compile Include="Assets\Pvr_Audio3D\API\Pvr_Audio3DAPI.cs" />
+     <Compile Include="Assets\Pvr_Audio3D\Scripts\Pvr_Audio3D.cs" />
+     <Compile Include="Assets\Pvr_Audio3D\Scripts\Pvr_AudioUnlock.cs" />
+     <Compile Include="Assets\Pvr_Controller\API\Pvr_ControllerAPI.cs" />
+     <Compile Include="Assets\Pvr_Controller\Scenes\Scripts\DemoManager.cs" />
+     <Compile Include="Assets\Pvr_Controller\Scripts\Pvr_Controller.cs" />
+     <Compile Include="Assets\Pvr_Controller\Scripts\Pvr_ControllerLink.cs" />
+     <Compile Include="Assets\Pvr_Controller\Scripts\Pvr_ControllerManager.cs" />
+     <Compile Include="Assets\Pvr_Controller\Scripts\Pvr_ControllerVisual.cs" />
+     <Compile Include="Assets\Pvr_ExtraSensor\Scripts\Pvr_ExtraSensor.cs" />
+     <Compile Include="Assets\Pvr_Haptics\API\Pvr_HapticsAPI.cs" />
+     <Compile Include="Assets\Pvr_Haptics\Scripts\Pvr_Haptics.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\DemoController.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\IJsonWrapper.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\JsonData.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\JsonException.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\JsonMapper.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\JsonReader.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\JsonWriter.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\Lexer.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LitJson\ParserToken.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Scripts\LoadingRatation.cs" />
+     <Compile Include="Assets\Pvr_Payment\Demo\Utils\InputManager.cs" />
+     <Compile Include="Assets\Pvr_Payment\Scripts\Callback.cs" />
+     <Compile Include="Assets\Pvr_Payment\Scripts\CommonDic.cs" />
+     <Compile Include="Assets\Pvr_Payment\Scripts\PicoPaymentSDK.cs" />
+     <Compile Include="Assets\Pvr_TouchPad\API\Pvr_TouchPadAPI.cs" />
+     <Compile Include="Assets\Pvr_TouchPad\Scripts\Pvr_TouchPad.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\API\Pvr_UnitySDKAPI.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Pvr_UnitySDKManager.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\QuitGame.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Render\Pvr_UnitySDKEye.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Render\Pvr_UnitySDKEyeManager.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Render\Pvr_UnitySDKPostRender.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Render\Pvr_UnitySDKPreRender.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Render\Pvr_UnitySDKRender.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Scenes\Examples\Sphere\Scripts\MoveCylinder.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Scenes\Examples\Sphere\Scripts\MoveSphere.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Scenes\Examples\Sphere\Scripts\Resetbutton.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Sensor\Pvr_UnitySDKHeadTrack.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Sensor\Pvr_UnitySDKPose.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\Sensor\Pvr_UnitySDKSensor.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Config\Pvr_UnitySDKConfigProfile.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Config\Pvr_UnitySDKFPSs.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Event\Pvr_GazeFuse.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Event\Pvr_GazeInputModule.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Event\Pvr_GazeInputModuleCrosshair.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Event\Pvr_UnitySDKPluginEvent.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\System\Event\Pvr_UnitySDKSightInputModule.cs" />
+     <Compile Include="Assets\Pvr_UnitySDK\UnityEditor\Pvr_UnitySDKEditor.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scenes\iOS Examples\BLEList.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scenes\iOS Examples\BLEListener.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scenes\iOS Examples\HeadWearButton.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scenes\iOS Examples\HearWearLIst.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Config\FPS_S.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Config\PicoVRConfigProfile.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Device\PicoVRAndroidDevice.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Device\PicoVRBaseDevice.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Device\PicoVRIOSDevice.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Device\PicoVRUnityDevice.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Event\SightInputModule.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Eye\PicoVREye.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Eye\PicoVREyeManager.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\PicoVRManager.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\StereoRender\PicoVRPostRender.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\StereoRender\PicoVRPreRender.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Tracking\PicoVRHeadTrack.cs" />
+     <Compile Include="Assets\Pvr_UnitySDKLegacy\Scripts\Tracking\PicoVRPose.cs" />
+     <Compile Include="Assets\Pvr_VolumePowerBrightness\API\Pvr_VolumePowerBrightnessAPI.cs" />
+     <Compile Include="Assets\Pvr_VolumePowerBrightness\Scripts\Pvr_VolumePowerBrightness.cs" />
+     <Compile Include="Assets\Scripts\PicoUnityActivity.cs" />
+     <Compile Include="Assets\Scripts\SaveImages.cs" />
+     <Compile Include="Assets\Scripts\save.cs" />
+     <None Include="Assets\Pvr_TouchPad\Scenes\placeholder.txt" />
+     <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Plugins\DOTween\readme.txt" />
+     <None Include="Assets\Pvr_TouchPad\API\placeholder.txt" />
+     <None Include="Assets\Pvr_UnitySDK\Scenes\Examples\Sphere\Resources\Undistortion.shader" />
+     <None Include="Assets\Pvr_UnitySDK\Resources\Fade.shader" />
+     <None Include="Assets\Pvr_UnitySDK\Resources\FillColor.shader" />
+     <None Include="Assets\Plugins\DOTween\DOTween46.xml" />
+     <None Include="Assets\Plugins\DOTween\DOTween50.xml" />
+     <None Include="Assets\Pvr_UnitySDK\Resources\Undistortion.shader" />
+     <None Include="Assets\Pvr_Controller\Resources\Undistortion.shader" />
+     <None Include="Assets\Pvr_Controller\Resources\FillColor.shader" />
+     <None Include="Assets\Plugins\DOTween\DOTween43.xml" />
+ <Reference Include="UnityEngine.UI">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.TestRunner">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/TestRunner/UnityEngine.TestRunner.dll</HintPath>
+ </Reference>
+ <Reference Include="nunit.framework">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/TestRunner/nunit.framework.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.HoloLens">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.VR">
+ <HintPath>D:/zhen/5.6.1/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween">
+ <HintPath>C:/Users/lebron.zhen/Desktop/saveimage/PicoVR/Assets/Plugins/DOTween/DOTween.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween43">
+ <HintPath>C:/Users/lebron.zhen/Desktop/saveimage/PicoVR/Assets/Plugins/DOTween/DOTween43.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween46">
+ <HintPath>C:/Users/lebron.zhen/Desktop/saveimage/PicoVR/Assets/Plugins/DOTween/DOTween46.dll</HintPath>
+ </Reference>
+ <Reference Include="DOTween50">
+ <HintPath>C:/Users/lebron.zhen/Desktop/saveimage/PicoVR/Assets/Plugins/DOTween/DOTween50.dll</HintPath>
+ </Reference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  
+</Project>

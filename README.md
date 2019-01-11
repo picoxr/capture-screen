@@ -7,8 +7,9 @@
 
 ## Description：
 
-- press the Ok button to take a screenshot
+- This demo shows how to use Unity API to capture screenshots
 
 ## Usage：
 
-- Pico devices in the path of the screenshots on the computer in the **/storage/emulated/0/Pictures/Screenshots/** below, (**com.pico.Integration** is the package name).
+- Press Confirm button to take a screenshot
+- The screenshots will be stored in **/storage/emulated/0/Pictures/Screenshots/** folder.

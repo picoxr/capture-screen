@@ -29,14 +29,20 @@ public class SaveImages : MonoBehaviour {
             screenShot.Apply();
 
             byte[] bytes = screenShot.EncodeToPNG();
+            string filepath = "/storage/emulated/0/Pictures/Screenshots/";
 
-            string filename = "/storage/emulated/0/Pictures/Screenshots/" + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + mask + ".png";
+            if (!System.IO.Directory.Exists(filepath))
+            {
+                System.IO.Directory.CreateDirectory(filepath);
+            }
+
+            string filename = filepath + System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss") + mask + ".png";
 
             System.IO.File.WriteAllBytes(filename, bytes);
             
             RenderTexture.active = null;
 			Debug.Log ("list111");
-			PicoUnityActivity.CallObjectMethod ("refresh",Application.persistentDataPath);
+			PicoUnityActivity.CallObjectMethod ("refresh", filepath);
         }
     }
 

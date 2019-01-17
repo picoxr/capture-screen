@@ -75,11 +75,11 @@ public class PicoUnityActivity
 		}
 	}
 	/// <summary>
-	/// 获取指定的activity
+	/// get specific activity
 	/// </summary>
-	/// <param name="package_name">Activity所属于的包名</param>
-	/// <param name="activity_name">Activity的名称</param>
-	/// <returns>指定的activity句柄</returns>
+	/// <param name="package_name">Activity package name</param>
+	/// <param name="activity_name">Activity name</param>
+	/// <returns>activity object</returns>
 	public static AndroidJavaObject GetActivity (string package_name, string activity_name)
 	{
 		return new AndroidJavaClass (package_name).GetStatic<AndroidJavaObject> (activity_name);

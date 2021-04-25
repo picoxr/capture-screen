@@ -11,3 +11,6 @@
 
 - Press Confirm button to take a screenshot
 - The screenshots will be stored in **/storage/emulated/0/Pictures/Screenshots/** folder.
+
+## Note:
+- If you have any questions/comments, please raise requests at [**PicoDevSupport Portal**](https://picodevsupport.atlassian.net/servicedesk/customer/user/login?

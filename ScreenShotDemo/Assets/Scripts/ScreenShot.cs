@@ -21,7 +21,7 @@ public class ScreenShot : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.JoystickButton0))
         {
             cube.transform.Rotate(0, 0, 360 * Time.deltaTime);
-            SaveImages.SaveImage(Pvr_UnitySDKManager.SDK.eyeTextures[Pvr_UnitySDKManager.SDK.currEyeTextureIdx + (int)eyeSide * 3]);
+            SaveImages.SaveImage(Pvr_UnitySDKRender.Instance.eyeTextures[Pvr_UnitySDKRender.Instance.currEyeTextureIdx + (int)eyeSide * 3]);
         }
 
     }

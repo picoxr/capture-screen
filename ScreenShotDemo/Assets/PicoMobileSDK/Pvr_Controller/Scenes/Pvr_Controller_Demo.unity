@@ -150,26 +150,22 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4992545353728192, guid: 7e54d9a2dcc97dc419b5c5dc91827090, type: 2}
       propertyPath: m_RootOrder
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
-    - target: {fileID: 114599940810694846, guid: 7e54d9a2dcc97dc419b5c5dc91827090,
+    - target: {fileID: 114120552832373632, guid: 7e54d9a2dcc97dc419b5c5dc91827090,
         type: 2}
+      propertyPath: neo
+      value: 
+      objectReference: {fileID: 1140772726308538, guid: cc46481dccf3c54469bd85557de7649d,
+        type: 2}
+    - target: {fileID: 0}
       propertyPath: HeadSetController
       value: 
       objectReference: {fileID: 1247140367}
-    - target: {fileID: 114599940810694846, guid: 7e54d9a2dcc97dc419b5c5dc91827090,
-        type: 2}
+    - target: {fileID: 0}
       propertyPath: cube
       value: 
       objectReference: {fileID: 1449465201}
-    - target: {fileID: 1521971727860078, guid: 7e54d9a2dcc97dc419b5c5dc91827090, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1957738543716882, guid: 7e54d9a2dcc97dc419b5c5dc91827090, type: 2}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 7e54d9a2dcc97dc419b5c5dc91827090, type: 2}
   m_IsPrefabParent: 0
@@ -205,7 +201,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1247140368
 Transform:
   m_ObjectHideFlags: 0
@@ -233,6 +229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   clickMethod: 0
   collisionClick: 0
+  pressToDrag: 0
   autoActivatingCanvas: {fileID: 0}
   hoveringElement: {fileID: 0}
   hoverDurationTimer: 0
@@ -546,6 +543,46 @@ Prefab:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 11442420, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: rtSize.x
+      value: 2048
+      objectReference: {fileID: 0}
+    - target: {fileID: 11442420, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: rtSize.y
+      value: 2048
+      objectReference: {fileID: 0}
+    - target: {fileID: 11442420, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: customFPS
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 11442420, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: UseSinglePass
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446018, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: LeftEyeCamera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446018, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: RightEyeCamera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446018, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: MonoEyeCamera
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446018, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: foveationLevel
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11446018, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: foveatedRendering
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4012638077614798, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11464666, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
     - {fileID: 11429112, guid: f4d2c95a82cadba4fb259ca17b5a8404, type: 2}
@@ -590,7 +627,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 6a5ef4f25924d4b3fafb6943ffc42816, type: 2}
+  - {fileID: 2100000, guid: c95d7ec236299944fa448bef49b89484, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -691,7 +728,7 @@ GameObject:
   m_PrefabParentObject: {fileID: 1017990686937292, guid: 7e54d9a2dcc97dc419b5c5dc91827090,
     type: 2}
   m_PrefabInternal: {fileID: 740691508}
---- !u!114 &1924993516
+--- !u!114 &1924993515
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -706,7 +743,7 @@ MonoBehaviour:
   controller0: {fileID: 1576487192}
   controller1: {fileID: 1835767334}
   cube: {fileID: 1449465201}
-  normat: {fileID: 2100000, guid: 6a5ef4f25924d4b3fafb6943ffc42816, type: 2}
+  normat: {fileID: 2100000, guid: c95d7ec236299944fa448bef49b89484, type: 2}
   gazemat: {fileID: 2100000, guid: 3a2a4a14d26888e429bc4eb8b84f2374, type: 2}
   clickmat: {fileID: 2100000, guid: fa7a26ea01645ab46a89d62420f831b8, type: 2}
   rayDefaultLength: 4

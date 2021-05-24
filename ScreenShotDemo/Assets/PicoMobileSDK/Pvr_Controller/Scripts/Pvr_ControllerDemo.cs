@@ -1,4 +1,11 @@
-﻿using System;
+﻿// Copyright  2015-2020 Pico Technology Co., Ltd. All Rights Reserved.
+
+
+#if !UNITY_EDITOR && UNITY_ANDROID 
+#define ANDROID_DEVICE
+#endif
+
+using System;
 using UnityEngine;
 using System.Collections;
 using Pvr_UnitySDKAPI;
@@ -27,19 +34,30 @@ public class Pvr_ControllerDemo : MonoBehaviour
     GameObject referenceObj;
     public float rayDefaultLength = 4;
     private bool isHasController = false;
+    private bool headcontrolmode = false;
+    private RaycastHit hit;
+    private GameObject rayLine;
+    private GameObject dot;
+
     void Start()
     {
         ray = new Ray();
+        hit = new RaycastHit();
         if (Pvr_UnitySDKManager.SDK.isHasController)
         {
             Pvr_ControllerManager.PvrServiceStartSuccessEvent += ServiceStartSuccess;
             Pvr_ControllerManager.SetControllerStateChangedEvent += ControllerStateListener;
             Pvr_ControllerManager.ControllerStatusChangeEvent += CheckControllerStateForGoblin;
             isHasController = true;
-        }
-#if UNITY_EDITOR 
-        currentController = controller0;
+#if UNITY_EDITOR
+            HeadSetController.SetActive(false);
+            currentController = controller1;
+            dot = controller1.transform.Find("dot").gameObject;
+            dot.SetActive(true);
+            rayLine = controller1.transform.Find("ray_LengthAdaptive").gameObject;
+            rayLine.SetActive(true);
 #endif
+        }
         referenceObj = new GameObject("ReferenceObj");
     }
 
@@ -57,11 +75,12 @@ public class Pvr_ControllerDemo : MonoBehaviour
     {
         if (HeadSetController.activeSelf)
         {
-            HeadSetController.transform.parent.localRotation = Quaternion.Euler(Pvr_UnitySDKManager.SDK.HeadPose.Orientation.eulerAngles.x, Pvr_UnitySDKManager.SDK.HeadPose.Orientation.eulerAngles.y, 0);
+            HeadSetController.transform.parent.localRotation = Quaternion.Euler(Pvr_UnitySDKSensor.Instance.HeadPose.Orientation.eulerAngles.x, Pvr_UnitySDKSensor.Instance.HeadPose.Orientation.eulerAngles.y, 0);
+            HeadSetController.transform.parent.localPosition = Pvr_UnitySDKSensor.Instance.HeadPose.Position;
 
             ray.direction = HeadSetController.transform.position - HeadSetController.transform.parent.parent.Find("Head").position;
             ray.origin = HeadSetController.transform.parent.parent.Find("Head").position;
-            RaycastHit hit;
+            
             if (Physics.Raycast(ray, out hit))
             {
                 if (HeadSetController.name == "SightPointer")
@@ -92,8 +111,9 @@ public class Pvr_ControllerDemo : MonoBehaviour
                         hit.transform.GetComponent<Renderer>().material = gazemat;
                 }
                 lastHit = hit.transform;
+#if UNITY_EDITOR
                 Debug.DrawLine(ray.origin, hit.point, Color.red);
-
+#endif
                 if (Pvr_ControllerManager.Instance.LengthAdaptiveRay)
                 {
                     HeadSetController.transform.position = hit.point;
@@ -135,9 +155,9 @@ public class Pvr_ControllerDemo : MonoBehaviour
         {
             if (currentController != null)
             {
-                ray.direction = currentController.transform.Find("dot").position - currentController.transform.Find("start").position;
+                ray.direction = currentController.transform.forward - currentController.transform.up * 0.25f;
                 ray.origin = currentController.transform.Find("start").position;
-                RaycastHit hit;
+
                 if (Physics.Raycast(ray, out hit))
                 {
                     currentHit = hit.transform;
@@ -180,7 +200,9 @@ public class Pvr_ControllerDemo : MonoBehaviour
                         }
                     }
                     lastHit = hit.transform;
+#if UNITY_EDITOR
                     Debug.DrawLine(ray.origin, hit.point, Color.red);
+#endif
                     currentController.transform.Find("dot").position = hit.point;
                     if (Pvr_ControllerManager.Instance.LengthAdaptiveRay)
                     {
@@ -201,9 +223,12 @@ public class Pvr_ControllerDemo : MonoBehaviour
                     if(Pvr_ControllerManager.Instance.LengthAdaptiveRay)
                     {
                         currentController.transform.Find("dot").localScale = new Vector3(0.178f, 0.178f, 1);
-                        currentController.transform.Find("dot").position = currentController.transform.position + currentController.transform.forward.normalized * (0.5f + rayDefaultLength);
                     }
                 }
+#if UNITY_EDITOR
+                rayLine.GetComponent<LineRenderer>().SetPosition(0,currentController.transform.TransformPoint(0, 0, 0.072f));
+                rayLine.GetComponent<LineRenderer>().SetPosition(1, dot.transform.position);
+#endif
             }
 
             if (Controller.UPvr_GetKeyDown(0, Pvr_KeyCode.TOUCHPAD) ||
@@ -266,7 +291,27 @@ public class Pvr_ControllerDemo : MonoBehaviour
 
     private void CheckControllerStateForGoblin(string state)
     {
-        HeadSetController.SetActive(!Convert.ToBoolean(Convert.ToInt16(state)));
+        HeadSetController.SetActive(Convert.ToInt16(state) != 1);
+    }
+
+    public void SwitchControlMode()
+    {
+#if UNITY_EDITOR
+        if (headcontrolmode)
+        {
+            headcontrolmode = false;
+            HeadSetController.SetActive(false);
+            controller0.SetActive(true);
+            controller1.SetActive(true);
+        }
+        else
+        {
+            headcontrolmode = true;
+            HeadSetController.SetActive(true);
+            controller0.SetActive(false);
+            controller1.SetActive(false);
+        }
+#endif
     }
 
 }

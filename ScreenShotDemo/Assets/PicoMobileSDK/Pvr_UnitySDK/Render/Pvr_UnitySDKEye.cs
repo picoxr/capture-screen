@@ -1,8 +1,16 @@
-﻿using System;
-using UnityEngine;
-using Pvr_UnitySDKAPI;
+﻿// Copyright  2015-2020 Pico Technology Co., Ltd. All Rights Reserved.
+
+
+#if !UNITY_EDITOR && UNITY_ANDROID 
+#define ANDROID_DEVICE
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
+using Pvr_UnitySDKAPI;
+using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Experimental.Rendering;
 
 [RequireComponent(typeof(Camera))]
 public class Pvr_UnitySDKEye : MonoBehaviour
@@ -19,192 +27,16 @@ public class Pvr_UnitySDKEye : MonoBehaviour
     private int eyeCameraOriginCullingMask;
     private CameraClearFlags eyeCameraOriginClearFlag;
     private Color eyeCameraOriginBackgroundColor;
-    private int applicationOriginFrameRate;
-    private bool boundaryFrameRate = false;
+    private int lastBoundaryState = 0;
     #endregion
-
-
-    private Pvr_UnitySDKEyeManager controller;
-
-    public Pvr_UnitySDKEyeManager Controller
-    {
-        get
-        {
-            if (transform.parent == null)
-            {
-                return null;
-            }
-            if ((Application.isEditor && !Application.isPlaying) || controller == null)
-            {
-                return transform.parent.GetComponentInParent<Pvr_UnitySDKEyeManager>();
-            }
-            return controller;
-        }
-    }
 
     Matrix4x4 realProj = Matrix4x4.identity;
-
     private const int bufferSize = 3;
-
-    private int IDIndex = 0;
+    private int IDIndex;
 
     private RenderEventType eventType = 0;
-    private RenderEventType boundaryEventType = 0;
 
-
-    public bool isFadeUSing = false;
-
-    private float elapsedTime = 0.0f;
-    public float fadeTime = 5.0f;
-    public Color fadeColor = new Color(0f, 0f, 0f, 1.0f);
-    private Material fadeMaterial = null;
-    private bool isFading = false;
-
-    private Vector2 FoveationGainValue = Vector2.zero;
-    private float FoveationAreaValue = 0.0f;
-    private float FoveationMinimumValue = 0.0f;
     private int previousId = 0;
-    #endregion
-
-    /************************************ Public Interfaces  *********************************/
-    #region Public Interfaces
-
-    public void EyeRender()
-    {
-        SetupUpdate();
-        if (Pvr_UnitySDKManager.SDK.eyeTextures[IDIndex] != null)
-        {
-            Pvr_UnitySDKManager.SDK.eyeTextures[IDIndex].DiscardContents();
-            eyecamera.targetTexture = Pvr_UnitySDKManager.SDK.eyeTextures[IDIndex];
-        }
-    }
-
-    #endregion
-
-    /************************************ Private Interfaces  *********************************/
-    #region Private Interfaces
-    private void Setup(Eye eyeSide)
-    {
-        eyecamera = GetComponent<Camera>();
-        transform.localPosition = Pvr_UnitySDKManager.SDK.EyeOffset(eyeSide);
-        eyecamera.aspect = 1.0f;
-        eyecamera.rect = new Rect(0, 0, 1, 1);
-#if UNITY_EDITOR
-        eyecamera.rect = Pvr_UnitySDKManager.SDK.EyeRect(eyeSide);
-#endif
-
-        //  AW     
-        if (Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
-        {
-            eyecamera.rect = Pvr_UnitySDKManager.SDK.EyeRect(eyeSide);
-            Rect left = new Rect(0.0f, 0.0f, 0.5f, 1.0f);
-            Rect right = new Rect(0.5f, 0.0f, 0.5f, 1.0f);
-            if (eyeSide == Eye.LeftEye)
-                eyecamera.rect = left;
-            else
-                eyecamera.rect = right;
-            eyecamera.fieldOfView = Pvr_UnitySDKManager.SDK.EyeFov;
-        }
-        //  AW
-        eventType = (eyeSide == Pvr_UnitySDKAPI.Eye.LeftEye) ?
-                        RenderEventType.LeftEyeEndFrame :
-                        RenderEventType.RightEyeEndFrame;
-
-        boundaryEventType = (eyeSide == Pvr_UnitySDKAPI.Eye.LeftEye) ?
-                        RenderEventType.BoundaryRenderLeft :
-                        RenderEventType.BoundaryRenderRight;
-    }
-
-    private void SetupUpdate()
-    {
-        eyecamera.fieldOfView = Pvr_UnitySDKManager.SDK.EyeFov;
-        IDIndex = Pvr_UnitySDKManager.SDK.currEyeTextureIdx + (int)eyeSide * bufferSize;
-        eyecamera.enabled = true;
-    }
-
-    #region  DrawVignetteLine
-
-    private Material mat_Vignette;
-
-    void DrawVignetteLine()
-    {
-        if (null == mat_Vignette)
-        {
-            mat_Vignette = new Material(Shader.Find("Diffuse"));//Mobile/
-            if (null == mat_Vignette)
-            {
-                return;
-            }
-        }
-        GL.PushMatrix();
-        mat_Vignette.SetPass(0);
-        GL.LoadOrtho();
-        vignette();
-        GL.PopMatrix();
-        screenFade();
-    }
-
-    void screenFade()
-    {
-        if (isFading)
-        {
-            fadeMaterial.SetPass(0);
-            GL.PushMatrix();
-            GL.LoadOrtho();
-            GL.Color(fadeMaterial.color);
-            GL.Begin(GL.QUADS);
-            GL.Vertex3(0f, 0f, -12f);
-            GL.Vertex3(0f, 1f, -12f);
-            GL.Vertex3(1f, 1f, -12f);
-            GL.Vertex3(1f, 0f, -12f);
-            GL.End();
-            GL.PopMatrix();
-        }
-    }
-
-    IEnumerator ScreenFade()
-    {
-        elapsedTime = 0.0f;
-        fadeMaterial.color = fadeColor;
-        Color color = fadeColor;
-        isFading = true;
-        while (elapsedTime < fadeTime)
-        {
-            yield return new WaitForEndOfFrame();
-            elapsedTime += Time.deltaTime;
-            color.a = 1.0f - Mathf.Clamp01(elapsedTime / fadeTime);
-            fadeMaterial.color = color;
-        }
-        isFading = false;
-    }
-    void vignette()
-    {
-        GL.Begin(GL.QUADS);
-        GL.Color(Color.black);
-        //top
-        GL.Vertex3(0.0f, 1.0f, 0.0f);
-        GL.Vertex3(1.0f, 1.0f, 0.0f);
-        GL.Vertex3(1.0f, 0.995f, 0.0f);
-        GL.Vertex3(0.0f, 0.995f, 0.0f);
-        //bottom
-        GL.Vertex3(0.0f, 0.0f, 0.0f);
-        GL.Vertex3(0.0f, 0.005f, 0.0f);
-        GL.Vertex3(1.0f, 0.005f, 0.0f);
-        GL.Vertex3(1.0f, 0.0f, 0.0f);
-        //left
-        GL.Vertex(new Vector3(0.0f, 1.0f, 0.0f));
-        GL.Vertex(new Vector3(0.005f, 1.0f, 0.0f));
-        GL.Vertex(new Vector3(0.005f, 0.0f, 0.0f));
-        GL.Vertex(new Vector3(0.0f, 0.0f, 0.0f));
-        //right
-        GL.Vertex(new Vector3(0.995f, 1.0f, 0.0f));
-        GL.Vertex(new Vector3(1.0f, 1.0f, 0.0f));
-        GL.Vertex(new Vector3(1.0f, 0.0f, 0.0f));
-        GL.Vertex(new Vector3(0.995f, 0.0f, 0.0f));
-        GL.End();
-    }
-
-    #endregion
 
     #endregion
 
@@ -213,174 +45,116 @@ public class Pvr_UnitySDKEye : MonoBehaviour
     void Awake()
     {
         Instances.Add(this);
-
-        eyecamera = this.GetComponent<Camera>();
-        if (!Pvr_UnitySDKManager.SDK.HmdOnlyrot)
-        {
-            fadeMaterial = new Material(Shader.Find("Pvr_UnitySDK/Fade"));
-        }
+        eyecamera = GetComponent<Camera>();
     }
 
     void Start()
     {
         Setup(eyeSide);
+        SetupUpdate();
         if (eyecamera != null)
         {
-            eyecamera.enabled = !Pvr_UnitySDKManager.SDK.Monoscopic;
-
             #region BoundarySystem
             // record
             eyeCameraOriginCullingMask = eyecamera.cullingMask;
             eyeCameraOriginClearFlag = eyecamera.clearFlags;
             eyeCameraOriginBackgroundColor = eyecamera.backgroundColor;
-            applicationOriginFrameRate = Application.targetFrameRate;
-            boundaryFrameRate = Pvr_UnitySDKAPI.BoundarySystem.UPvr_GetFrameRateLimit();
             #endregion
         }
-
     }
 
     void Update()
     {
-        if (Pvr_UnitySDKManager.SDK.trackingmode == 2 || Pvr_UnitySDKManager.SDK.trackingmode == 3)
-        {
-#if !UNITY_EDITOR && UNITY_ANDROID
-            if (!Pvr_UnitySDKManager.SDK.HmdOnlyrot)
-            {
-                if (Pvr_UnitySDKManager.SDK.DefaultRange)
-                {
-                    if (Mathf.Sqrt(Mathf.Pow(Pvr_UnitySDKManager.SDK.HeadPose.Position.x, 2.0f) + Mathf.Pow(Pvr_UnitySDKManager.SDK.HeadPose.Position.z, 2.0f)) >= 0.8f)
-                    {
-                        isFading = true;
-                        fadeMaterial.color = new Color(0f, 0f, 0f,
-                            Mathf.Clamp((Mathf.Max(Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x),
-                                             Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z)) - 0.8f) /
-                                        0.16f, 0f, 0.3f));
-                    }
-                    else
-                    {
-                        if (isFadeUSing)
-                        {
-                            if (elapsedTime >= fadeTime)
-                            {
-                                fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
-                                isFading = false;
-                            }
-                        }
-                        else
-                        {
-                            fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
-                            isFading = false;
-                        }
-                    }
-                }
-                else
-                {
-                    if (Mathf.Sqrt(Mathf.Pow(Pvr_UnitySDKManager.SDK.HeadPose.Position.x, 2.0f) + Mathf.Pow(Pvr_UnitySDKManager.SDK.HeadPose.Position.z, 2.0f)) >= Pvr_UnitySDKManager.SDK.CustomRange)
-                    {
-                        isFading = true;
-                        fadeMaterial.color = new Color(0f, 0f, 0f,
-                            Mathf.Clamp((Mathf.Max(Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.x),
-                                             Mathf.Abs(Pvr_UnitySDKManager.SDK.HeadPose.Position.z)) - Pvr_UnitySDKManager.SDK.CustomRange) /
-                                        (Pvr_UnitySDKManager.SDK.CustomRange / 5f), 0f, 0.3f));
-                    }
-                    else
-                    {
-                        if (isFadeUSing)
-                        {
-                            if (elapsedTime >= fadeTime)
-                            {
-                                fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
-                                isFading = false;
-                            }
-                        }
-                        else
-                        {
-                            fadeMaterial.color = new Color(0f, 0f, 0f, 0f);
-                            isFading = false;
-                        }
-                    }
-                }
-            }
-#endif
-        }
-
         // boundary
-        if (eyecamera != null && eyecamera.enabled == true)
+        if (eyecamera != null && eyecamera.enabled)
         {
-            int boundaryState = Pvr_UnitySDKAPI.BoundarySystem.UPvr_GetSeeThroughState();
-            if (boundaryState == 2)
-            {
-                // close camera render(close camera render)
-                if (eyecamera.cullingMask != 0) 
-                {
-                    eyecamera.cullingMask = 0;
-                }
+            int currentBoundaryState = BoundarySystem.UPvr_GetSeeThroughState();
 
-                if (eyecamera.clearFlags != CameraClearFlags.SolidColor)
+            if (currentBoundaryState != this.lastBoundaryState)
+            {
+                if (currentBoundaryState == 2) // close camera render(close camera render) and limit framerate(if needed)
                 {
+                    // record
+                    eyeCameraOriginCullingMask = eyecamera.cullingMask;
+                    eyeCameraOriginClearFlag = eyecamera.clearFlags;
+                    eyeCameraOriginBackgroundColor = eyecamera.backgroundColor;
+
+                    // close render
+                    eyecamera.cullingMask = 0;
                     eyecamera.clearFlags = CameraClearFlags.SolidColor;
                     eyecamera.backgroundColor = Color.black;
                 }
-               
-                if(boundaryFrameRate)
+                else if (currentBoundaryState == 1) // open camera render, but limit framerate(if needed)
                 {
-                    if (Application.targetFrameRate != 30)
+                    if (this.lastBoundaryState == 2)
                     {
-                        Application.targetFrameRate = 30;
+                        if (eyecamera.cullingMask == 0)
+                        {
+                            eyecamera.cullingMask = eyeCameraOriginCullingMask;
+                        }
+                        if (eyecamera.clearFlags == CameraClearFlags.SolidColor)
+                        {
+                            eyecamera.clearFlags = eyeCameraOriginClearFlag;
+                        }
+                        if (eyecamera.backgroundColor == Color.black)
+                        {
+                            eyecamera.backgroundColor = eyeCameraOriginBackgroundColor;
+                        }                       
+                    }
+                }
+                else // open camera render(recover)
+                {
+                    if ((this.lastBoundaryState == 2 || this.lastBoundaryState == 1))
+                    {
+                        if (eyecamera.cullingMask == 0)
+                        {
+                            eyecamera.cullingMask = eyeCameraOriginCullingMask;
+                        }
+                        if (eyecamera.clearFlags == CameraClearFlags.SolidColor)
+                        {
+                            eyecamera.clearFlags = eyeCameraOriginClearFlag;
+                        }
+                        if (eyecamera.backgroundColor == Color.black)
+                        {
+                            eyecamera.backgroundColor = eyeCameraOriginBackgroundColor;
+                        }
+
                     }
                 }
 
-            }
-            else
-            {
-                // open camera render(recover)
-                if (eyecamera.cullingMask != this.eyeCameraOriginCullingMask)
-                {
-                    eyecamera.cullingMask = this.eyeCameraOriginCullingMask;
-                }
-
-                if (eyecamera.clearFlags != this.eyeCameraOriginClearFlag)
-                {
-                    eyecamera.clearFlags = this.eyeCameraOriginClearFlag;
-                    eyecamera.backgroundColor = this.eyeCameraOriginBackgroundColor;
-                }
-
-                if (Application.targetFrameRate != this.applicationOriginFrameRate)
-                {
-                    Application.targetFrameRate = this.applicationOriginFrameRate;
-                }
+                this.lastBoundaryState = currentBoundaryState;
             }
         }
     }
+
+
     void OnEnable()
     {
-        isFadeUSing = Pvr_UnitySDKManager.SDK.ScreenFade;
-        if (isFadeUSing)
-        {
-            fadeMaterial = new Material(Shader.Find("Pvr_UnitySDK/Fade"));
-            if (fadeMaterial != null)
-            {
-                Debug.Log("Get fade material success");
-            }
-            else
-            {
-                Debug.Log("Get fade material Error");
-                isFadeUSing = false;
-            }
-            StartCoroutine(ScreenFade());
-        }
-#if UNITY_2018_1_OR_NEWER
+#if UNITY_2018_1_OR_NEWER && !UNITY_2019_1_OR_NEWER
         if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
             UnityEngine.Experimental.Rendering.RenderPipeline.beginCameraRendering += MyPreRender;
+#endif
+#if UNITY_2019_1_OR_NEWER
+        if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
+        {
+            RenderPipelineManager.beginCameraRendering += MyPreRender;
+            RenderPipelineManager.endCameraRendering += MyPostRender;
+        }
 #endif
     }
 
     private void OnDisable()
     {
-#if UNITY_2018_1_OR_NEWER
+#if UNITY_2018_1_OR_NEWER && !UNITY_2019_1_OR_NEWER
         if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
             UnityEngine.Experimental.Rendering.RenderPipeline.beginCameraRendering -= MyPreRender;
+#endif
+#if UNITY_2019_1_OR_NEWER
+        if (UnityEngine.Rendering.GraphicsSettings.renderPipelineAsset != null)
+        {
+            RenderPipelineManager.beginCameraRendering -= MyPreRender;
+            RenderPipelineManager.endCameraRendering -= MyPostRender;
+        }
 #endif
     }
 
@@ -391,54 +165,64 @@ public class Pvr_UnitySDKEye : MonoBehaviour
 
     public void MyPreRender(Camera camera)
     {
+        if (camera.gameObject != this.gameObject)
+            return;
         OnPreRender();
+    }
+
+    public void MyPreRender(ScriptableRenderContext context, Camera camera)
+    {
+        if (camera.gameObject != this.gameObject)
+            return;
+        OnPreRender();
+    }
+
+    public void MyPostRender(ScriptableRenderContext context, Camera camera)
+    {
+        if (camera.gameObject != this.gameObject)
+            return;
+        OnPostRender();
     }
 
     public static bool setLevel = false;
 
     void OnPreRender()
     {
-#if !UNITY_EDITOR && UNITY_ANDROID
-        Vector3 eyePoint = Vector3.zero;
-        if (Pvr_UnitySDKManager.SDK.isEnterVRMode)
+        if (!eyecamera.enabled)
+            return;
+#if ANDROID_DEVICE
+        if (Pvr_UnitySDKRender.Instance.StereoRendering != null)
         {
-            eyePoint = Pvr_UnitySDKAPI.System.UPvr_getEyeTrackingPos();
+            if (Pvr_UnitySDKRender.Instance.isSwitchSDK)
+            {
+                return;
+            }
+            Pvr_UnitySDKRender.Instance.StereoRendering.OnSDKPreRender();
         }
-        GetFFRInfo();
-        int eyeTextureId = Pvr_UnitySDKManager.SDK.eyeTextureIds[IDIndex];
 
-        Pvr_UnitySDKAPI.Render.UPvr_SetFoveationParameters(eyeTextureId, previousId, eyePoint.x, eyePoint.y, FoveationGainValue.x, FoveationGainValue.y, FoveationAreaValue, FoveationMinimumValue);
-        previousId = eyeTextureId;
+        SetFFRParameter();
         Pvr_UnitySDKPluginEvent.Issue(RenderEventType.BeginEye);
 #endif
     }
-   
+
     void OnPostRender()
     {
-        //DrawVignetteLine();
-        screenFade();
-
-        // eyebuffer
-        int eyeTextureId = Pvr_UnitySDKManager.SDK.eyeTextureIds[IDIndex];
-        Pvr_UnitySDKPluginEvent.IssueWithData(eventType, eyeTextureId);
-       
-        // boundary
-        if (!Pvr_UnitySDKManager.SDK.HmdOnlyrot)
-        {
-            Pvr_UnitySDKPluginEvent.IssueWithData(boundaryEventType, Pvr_UnitySDKManager.SDK.RenderviewNumber);
-        }
-
-#if !UNITY_EDITOR && UNITY_ANDROID
-        Pvr_UnitySDKPluginEvent.Issue(RenderEventType.EndEye);
-		if (eyeSide == Eye.LeftEye && !setLevel && Pvr_UnitySDKManager.SDK.IsViewerLogicFlow)
-        {   
-            AndroidJavaClass AvrAPI = new UnityEngine.AndroidJavaClass("com.unity3d.player.AvrAPI");
-            Pvr_UnitySDKAPI.System.UPvr_CallStaticMethod(AvrAPI, "setVrThread"); 
-            setLevel = true;
-            Debug.Log("Viewer setVrThread");
-        }
-        else
+        if (!eyecamera.enabled)
             return;
+        //DrawVignetteLine();
+#if ANDROID_DEVICE
+        // eyebuffer
+        Pvr_UnitySDKAPI.System.UPvr_UnityEventData(Pvr_UnitySDKAPI.System.UPvr_GetEyeBufferData(Pvr_UnitySDKRender.Instance.eyeTextureIds[IDIndex]));
+        Pvr_UnitySDKPluginEvent.Issue(eventType);
+        if (Pvr_UnitySDKRender.Instance.StereoRendering != null)
+        {
+            if (Pvr_UnitySDKRender.Instance.isSwitchSDK)
+            {
+                return;
+            }
+            Pvr_UnitySDKRender.Instance.StereoRendering.OnSDKPostRender();
+        }
+        Pvr_UnitySDKPluginEvent.Issue(RenderEventType.EndEye);
 #endif
     }
 
@@ -482,19 +266,158 @@ public class Pvr_UnitySDKEye : MonoBehaviour
 #endif
     #endregion
 
-    void GetFFRInfo()
+    /************************************ Public Interfaces  *********************************/
+    #region Public Interfaces
+
+    public void EyeRender()
     {
-        FoveationGainValue = Pvr_UnitySDKEyeManager.Instance.FoveationGainValue;
-        FoveationAreaValue = Pvr_UnitySDKEyeManager.Instance.FoveationAreaValue;
-        FoveationMinimumValue = Pvr_UnitySDKEyeManager.Instance.FoveationMinimumValue;
+        SetupUpdate();
+#if !UNITY_EDITOR
+        if (Pvr_UnitySDKRender.Instance.eyeTextures[IDIndex] != null)
+        {
+            Pvr_UnitySDKRender.Instance.eyeTextures[IDIndex].DiscardContents();
+            eyecamera.targetTexture = Pvr_UnitySDKRender.Instance.eyeTextures[IDIndex];
+        }
+#endif
     }
 
-}
+    #endregion
 
-public enum eFoveationLevel
-{
-    None = -1,
-    Low = 0,
-    Med = 1,
-    High = 2
+    /************************************ Private Interfaces  *********************************/
+    #region Private Interfaces
+    private void Setup(Eye eyeSide)
+    {
+        eyecamera = GetComponent<Camera>();
+        if (eyeSide == Eye.LeftEye || eyeSide == Eye.RightEye)
+        {
+            transform.localPosition = Pvr_UnitySDKManager.SDK.EyeOffset(eyeSide);
+        }
+        else if (eyeSide == Eye.BothEye)
+        {
+            transform.localPosition = Vector3.zero;
+        }
+        eyecamera.aspect = Pvr_UnitySDKManager.SDK.EyesAspect;
+        eyecamera.rect = new Rect(0, 0, 1, 1);
+#if UNITY_EDITOR
+        eyecamera.rect = Pvr_UnitySDKManager.SDK.EyeRect(eyeSide);
+#endif
+        //  AW
+        if (Pvr_UnitySDKRender.Instance.StereoRenderPath == StereoRenderingPathPico.MultiPass)
+        {
+            eventType = (eyeSide == Eye.LeftEye) ?
+                        RenderEventType.LeftEyeEndFrame :
+                        RenderEventType.RightEyeEndFrame;
+        }
+        else
+        {
+            eventType = RenderEventType.BothEyeEndFrame;
+        }
+
+    }
+
+    private void SetupUpdate()
+    {
+#if !UNITY_EDITOR
+        if (eyeSide == Eye.LeftEye || eyeSide == Eye.RightEye)
+        {
+            eyecamera.enabled = !(Pvr_UnitySDKManager.SDK.Monoscopic || Pvr_UnitySDKRender.Instance.StereoRenderPath == StereoRenderingPathPico.SinglePass);
+        }
+        else if (eyeSide == Eye.BothEye)
+        {
+            eyecamera.enabled = Pvr_UnitySDKRender.Instance.StereoRenderPath == StereoRenderingPathPico.SinglePass;
+        }
+#endif
+        eyecamera.fieldOfView = Pvr_UnitySDKRender.Instance.EyeVFoV;
+        eyecamera.aspect = Pvr_UnitySDKManager.SDK.EyesAspect;
+        if (eyeSide == Eye.LeftEye || eyeSide == Eye.RightEye)
+        {
+            IDIndex = Pvr_UnitySDKRender.Instance.currEyeTextureIdx + (int)eyeSide * bufferSize;
+        }
+        else if (eyeSide == Eye.BothEye)
+        {
+            IDIndex = Pvr_UnitySDKRender.Instance.currEyeTextureIdx;
+            Pvr_UnitySDKRender.Instance.isSwitchSDK = Pvr_UnitySDKRender.Instance.lastEyeTextureIdx == Pvr_UnitySDKRender.Instance.currEyeTextureIdx;
+            Pvr_UnitySDKRender.Instance.lastEyeTextureIdx = Pvr_UnitySDKRender.Instance.currEyeTextureIdx;
+        }
+    }
+
+    public void RefreshCameraPosition(float ipd)
+    {
+        Pvr_UnitySDKManager.SDK.leftEyeOffset = new Vector3(-ipd / 2, 0, 0);
+        Pvr_UnitySDKManager.SDK.rightEyeOffset = new Vector3(ipd / 2, 0, 0);
+
+        if (eyeSide == Eye.LeftEye || eyeSide == Eye.RightEye)
+        {
+            transform.localPosition = Pvr_UnitySDKManager.SDK.EyeOffset(eyeSide);
+        }
+        else if (eyeSide == Eye.BothEye)
+        {
+            eyecamera.stereoSeparation = ipd;
+        }
+    }
+
+    #region  DrawVignetteLine
+
+    private Material mat_Vignette;
+
+    void DrawVignetteLine()
+    {
+        if (null == mat_Vignette)
+        {
+            mat_Vignette = new Material(Shader.Find("Diffuse"));//Mobile/
+            if (null == mat_Vignette)
+            {
+                return;
+            }
+        }
+        GL.PushMatrix();
+        mat_Vignette.SetPass(0);
+        GL.LoadOrtho();
+        vignette();
+        GL.PopMatrix();
+    }
+
+    void vignette()
+    {
+        GL.Begin(GL.QUADS);
+        GL.Color(Color.black);
+        //top
+        GL.Vertex3(0.0f, 1.0f, 0.0f);
+        GL.Vertex3(1.0f, 1.0f, 0.0f);
+        GL.Vertex3(1.0f, 0.995f, 0.0f);
+        GL.Vertex3(0.0f, 0.995f, 0.0f);
+        //bottom
+        GL.Vertex3(0.0f, 0.0f, 0.0f);
+        GL.Vertex3(0.0f, 0.005f, 0.0f);
+        GL.Vertex3(1.0f, 0.005f, 0.0f);
+        GL.Vertex3(1.0f, 0.0f, 0.0f);
+        //left
+        GL.Vertex(new Vector3(0.0f, 1.0f, 0.0f));
+        GL.Vertex(new Vector3(0.005f, 1.0f, 0.0f));
+        GL.Vertex(new Vector3(0.005f, 0.0f, 0.0f));
+        GL.Vertex(new Vector3(0.0f, 0.0f, 0.0f));
+        //right
+        GL.Vertex(new Vector3(0.995f, 1.0f, 0.0f));
+        GL.Vertex(new Vector3(1.0f, 1.0f, 0.0f));
+        GL.Vertex(new Vector3(1.0f, 0.0f, 0.0f));
+        GL.Vertex(new Vector3(0.995f, 0.0f, 0.0f));
+        GL.End();
+    }
+
+    #endregion
+
+    #endregion
+
+    private void SetFFRParameter()
+    {
+
+        Vector3 eyePoint = Vector3.zero;
+        if (Pvr_UnitySDKManager.SDK.isEnterVRMode && Pvr_UnitySDKEyeManager.supportEyeTracking && Pvr_UnitySDKEyeManager.Instance.EyeTracking)
+        {
+            eyePoint = Pvr_UnitySDKAPI.System.UPvr_getEyeTrackingPos();
+        }
+        int eyeTextureId = Pvr_UnitySDKRender.Instance.eyeTextureIds[IDIndex];
+        Pvr_UnitySDKAPI.Render.UPvr_SetFoveationResource(eyeTextureId, previousId, eyePoint.x, eyePoint.y);
+        previousId = eyeTextureId;
+    }
 }

@@ -1,5 +1,7 @@
 ## Unity_Demo_ScreenShot
 
+- If you have any questions/comments, please visit [**Pico Developer Answers**](https://devanswers.pico-interactive.com/) and raise your question there.
+
 ## Unity Versions：
 - 2017.4 and later
 
@@ -11,6 +13,3 @@
 
 - Press Confirm button to take a screenshot
 - The screenshots will be stored in **/storage/emulated/0/Pictures/Screenshots/** folder.
-
-## Note:
-- If you have any questions/comments, please raise requests at [**PicoDevSupport Portal**](https://picodevsupport.atlassian.net/servicedesk/customer/user/login?
